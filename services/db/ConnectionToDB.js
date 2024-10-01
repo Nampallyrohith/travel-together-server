@@ -31,3 +31,6 @@ export const initializeDBAndStartServer = async () => {
         process.exit(1);
     }
 };
+
+
+export { database }
