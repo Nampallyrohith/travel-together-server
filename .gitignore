@@ -1,4 +1,4 @@
 node_modules
 .*env*
 /services/db/tables.sql
-/services/db/myplaces.db
+myplaces.db
