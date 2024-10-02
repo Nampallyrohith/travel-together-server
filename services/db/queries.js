@@ -12,6 +12,11 @@ var QUERIES;
     VALUES ($1, $2, $3);
   `;
 
+  QUERIES["GET_USER_HASHED_PASSWORD"] = `
+    SELECT password_hash as "passwordHash" FROM users 
+    WHERE email=$1;
+  `;
+
   QUERIES["INSERT_PLACE_ID"] = `
     INSERT INTO places (user_id, status)
     VALUES ($1, 'DRAFT')
@@ -36,6 +41,13 @@ const QUERY_TO_Z_MAPPING = {
     rows: {},
   },
 
+  [QUERIES.GET_USER_HASHED_PASSWORD]: {
+    args: [z.string().describe("Email ID")],
+    rows: {
+      passwordHash: z.string(),
+    },
+  },
+
   [QUERIES.INSERT_PLACE_ID]: {
     args: [z.number().describe("User ID")],
     rows: {
@@ -46,4 +58,4 @@ const QUERY_TO_Z_MAPPING = {
   },
 };
 
-export { QUERIES };
+export { QUERIES, QUERY_TO_Z_MAPPING };
