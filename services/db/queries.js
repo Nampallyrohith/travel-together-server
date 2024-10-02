@@ -1,11 +1,17 @@
-import { array, z } from "zod";
-import { placesStatusEnum } from "../../schema/enums.schema.js";
+import { z } from "zod";
+import { placesStatusEnum, PlaceStatusEnum } from "../../schema/enums.schema.js";
 
 var QUERIES;
 (function (QUERIES) {
   QUERIES["CHECK_USER_EXISTS"] = `
     SELECT email FROM users WHERE email=$1;
   `;
+
+  QUERIES["GET_USER_BY_EMAIL"] = `
+  SELECT id, full_name as "fullName", email
+  FROM users
+  WHERE email=$1;
+`;
 
   QUERIES["INSERT_USER"] = `
     INSERT INTO users (full_name, email, password_hash)
@@ -17,10 +23,10 @@ var QUERIES;
     WHERE email=$1;
   `;
 
-  QUERIES["INSERT_PLACE_ID"] = `
+  QUERIES["INSERT_PLACE_BY_USER_ID"] = `
     INSERT INTO places (user_id, status)
-    VALUES ($1, 'DRAFT')
-    RETURNING places.id as "placeId", status, is_draft as "isDraft";
+    VALUES ($1, '${placesStatusEnum.DRAFT}')
+    RETURNING id as "placeId", status, is_draft as "isDraft";
   `;
 })(QUERIES || (QUERIES = {}));
 
@@ -28,6 +34,15 @@ const QUERY_TO_Z_MAPPING = {
   [QUERIES.CHECK_USER_EXISTS]: {
     args: [z.string().describe("Email ID")],
     rows: {
+      email: z.string(),
+    },
+  },
+
+  [QUERIES.GET_USER_BY_EMAIL]: {
+    args: [z.string().describe("Email ID")],
+    rows: {
+      id: z.number(),
+      fullName: z.string(),
       email: z.string(),
     },
   },
@@ -48,11 +63,11 @@ const QUERY_TO_Z_MAPPING = {
     },
   },
 
-  [QUERIES.INSERT_PLACE_ID]: {
+  [QUERIES.INSERT_PLACE_BY_USER_ID]: {
     args: [z.number().describe("User ID")],
     rows: {
       placeId: z.number(),
-      status: placesStatusEnum,
+      status: PlaceStatusEnum,
       isDraft: z.boolean(),
     },
   },

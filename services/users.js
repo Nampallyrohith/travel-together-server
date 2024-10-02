@@ -6,6 +6,18 @@ import { IncorrectPassword, NoUserFound, UserExists } from "./error.js";
 import bcrypt from "bcrypt";
 import { validateQuery } from "./db/validateQuery.js";
 
+export async function getUserByEmail(email) {
+  emailSchema.parse(email);
+  const response = await database.get(QUERIES.GET_USER_BY_EMAIL, [email]);
+
+  const validateResponse = validateQuery(
+    QUERIES.GET_USER_BY_EMAIL,
+    [email],
+    response
+  );
+  return validateResponse;
+}
+
 export async function checkUserExistsByEmail(email) {
   emailSchema.parse(email);
 

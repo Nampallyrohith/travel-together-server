@@ -1,6 +1,8 @@
 import express from "express";
 import { initializeDBAndStartServer } from "./services/db/ConnectionToDB.js";
 import { loginUserHandler, newRegistrationHandler } from "./routes/users.js";
+import { authenticateUser } from "./middlewares/auth.js";
+import { postDraftPlaceHandler } from "./routes/places.js";
 
 export const app = express();
 
@@ -23,4 +25,10 @@ app.post("/user/register", async (req, res) => {
 app.post("/user/login", async (req, res) => {
   const { email, password } = req.body;
   await loginUserHandler(email, password, res);
+});
+
+app.post("/place/new", authenticateUser, async (req, res) => {
+  const { email } = req;
+
+  await postDraftPlaceHandler(email, res);
 });

@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS places (
     image_url TEXT,
     description TEXT,
     visited BOOLEAN DEFAULT FALSE,
-    is_draft BOOLEAN DEFAULT FALSE,
+    is_draft BOOLEAN NOT NULL DEFAULT TRUE,
     status TEXT CHECK(status IN ('DRAFT', 'ACTIVE')) NOT NULL
 );
 
