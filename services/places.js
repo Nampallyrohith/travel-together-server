@@ -43,7 +43,7 @@ export async function setDraftPlace(
   locationLink,
   imageUrl,
   description,
-  // carouselImages,
+  carouselImages,
   email,
   placeId
 ) {
@@ -59,6 +59,13 @@ export async function setDraftPlace(
     result.id,
     placeId,
   ]);
+  console.log(carouselImages);
+
+  await Promise.all(
+    carouselImages.map((image) =>
+      database.run(QUERIES.INSERT_DRAFT_CAROUSAL_IMAGES, [placeId, image])
+    )
+  );
 
   const response = await database.get(QUERIES.GET_UPDATED_PLACE, [
     result.id,
@@ -67,6 +74,26 @@ export async function setDraftPlace(
 
   // Validate the updated row after the query
   // TO-DO: Maintain error handling
+  const validateResponse = await validateQueryResponse(
+    QUERIES.GET_UPDATED_PLACE,
+    [result.id],
+    response
+  );
+
+  return validateResponse;
+}
+
+export async function setPostPlace(placeId, email) {
+  const result = await getUserByEmail(email);
+  await checkPlaceIdExists(placeId, result.id);
+
+  await database.run(QUERIES.UPDATE_STATUS_PLACE, [placeId, result.id]);
+
+  const response = await database.get(QUERIES.GET_UPDATED_PLACE, [
+    result.id,
+    placeId,
+  ]);
+
   const validateResponse = await validateQueryResponse(
     QUERIES.GET_UPDATED_PLACE,
     [result.id],

@@ -38,11 +38,22 @@ var QUERIES;
       address = ?, 
       location_link = ?, 
       image_url = ?, 
-      description = ?,
-      status='${placesStatusEnum.ACTIVE}',
-      is_draft=FALSE
+      description = ?
     WHERE user_id = ? 
       AND id = ?;
+  `;
+
+  QUERIES["INSERT_DRAFT_CAROUSAL_IMAGES"] = `
+    INSERT INTO carousel_images (place_id, image_url)
+    VALUES (? , ?);
+  `;
+
+  QUERIES["UPDATE_STATUS_PLACE"] = `
+  UPDATE places 
+  SET
+    status='${placesStatusEnum.ACTIVE}',
+    is_draft=false
+  WHERE id=? and user_id=?;
   `;
 
   // Fetch the updated place after the update
@@ -61,7 +72,7 @@ var QUERIES;
 
   QUERIES["GET_LAST_ROW_ID_FROM_PLACES"] = `
     SELECT last_insert_rowid() as "placeId"
-  `
+  `;
 
   // Fetch the newly inserted place
   QUERIES["GET_NEW_PLACE"] = `
@@ -135,7 +146,7 @@ const QUERY_TO_Z_MAPPING = {
 
   [QUERIES.INSERT_PLACE_BY_USER_ID]: {
     args: [z.number().describe("User ID")],
-    rows: {}, 
+    rows: {},
   },
 
   [QUERIES.GET_NEW_PLACE]: {

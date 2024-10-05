@@ -1,4 +1,8 @@
-import { postDraftPlace, setDraftPlace } from "../services/places.js";
+import {
+  postDraftPlace,
+  setDraftPlace,
+  setPostPlace,
+} from "../services/places.js";
 import { InvalidParams } from "../services/error.js";
 
 export const postDraftPlaceHandler = async (email, res) => {
@@ -20,8 +24,8 @@ export const setDraftplaceHandler = async (
   address,
   locationLink,
   imageUrl,
-  description
-  // carouselImages,
+  description,
+  carouselImages
 ) => {
   try {
     const response = await setDraftPlace(
@@ -30,7 +34,7 @@ export const setDraftplaceHandler = async (
       locationLink,
       imageUrl,
       description,
-      // carouselImages,
+      carouselImages,
       email,
       placeId
     );
@@ -53,4 +57,16 @@ export const setDraftplaceHandler = async (
       message: e.message,
     });
   }
+};
+
+export const setPostPlaceHandler = async (res, placeId, email) => {
+  const response = await setPostPlace(placeId, email);
+  res.status(200).json({
+    message: "Place successfully updated.",
+    data: {
+      placeId: response.placeId,
+      status: response.status,
+      isDraft: Boolean(response.isDraft),
+    },
+  });
 };

@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import {
   postDraftPlaceHandler,
   setDraftplaceHandler,
+  setPostPlaceHandler,
 } from "./routes/places.js";
 import { placeIdSchema, placeSchema } from "./schema/places.schema.js";
 
@@ -54,7 +55,14 @@ app.put("/draft/place/:placeId", authenticateUser, async (req, res) => {
     return res.status(400).json(validation.error);
   }
 
-  const { placeName, address, locationLink, imageUrl, description } = req.body;
+  const {
+    placeName,
+    address,
+    locationLink,
+    imageUrl,
+    description,
+    carouselImages,
+  } = req.body;
 
   await setDraftplaceHandler(
     email,
@@ -64,6 +72,16 @@ app.put("/draft/place/:placeId", authenticateUser, async (req, res) => {
     address,
     locationLink,
     imageUrl,
-    description
+    description,
+    carouselImages
   );
+});
+
+app.put("/post/place/:placeId", authenticateUser, async (req, res) => {
+  const { email } = req;
+
+  const { placeId } = req.params;
+  placeIdSchema.parse(placeId);
+
+  await setPostPlaceHandler(res, placeId, email);
 });

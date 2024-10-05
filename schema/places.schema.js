@@ -8,5 +8,5 @@ export const placeSchema = z.object({
   locationLink: z.string().url().nullable(),
   imageUrl: z.string().url().nullable(),
   description: z.string().nullable(),
-  // carouselImages: z.array(z.string().url()).nullable(),
+  carouselImages: z.array(z.string().url()).nullable(),
 });
