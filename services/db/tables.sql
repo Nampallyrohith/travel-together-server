@@ -24,5 +24,5 @@ CREATE TABLE IF NOT EXISTS places (
 CREATE TABLE IF NOT EXISTS carousel_images (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     place_id INTEGER NOT NULL REFERENCES places(id),
-    image_url TEXT NOT NULL
+    image_url TEXT
 );

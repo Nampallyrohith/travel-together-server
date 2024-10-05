@@ -1,35 +1,46 @@
 import jwt from "jsonwebtoken";
-import { emailSchema, passwordSchema } from "../schema/users.schema.js";
+import { passwordSchema } from "../schema/users.schema.js";
 import { database } from "./db/ConnectionToDB.js";
 import { QUERIES } from "./db/queries.js";
 import { IncorrectPassword, NoUserFound, UserExists } from "./error.js";
 import bcrypt from "bcrypt";
-import { validateQuery } from "./db/validateQuery.js";
+import {
+  validateQueryArguments,
+  validateQueryResponse,
+} from "./db/validateQuery.js";
 
 export async function getUserByEmail(email) {
-  emailSchema.parse(email);
-  const response = await database.get(QUERIES.GET_USER_BY_EMAIL, [email]);
+  // emailSchema.parse(email);
+  const query = QUERIES.GET_USER_BY_EMAIL;
+  
 
-  const validateResponse = validateQuery(
-    QUERIES.GET_USER_BY_EMAIL,
+  await validateQueryArguments(query, [email]);
+
+  const response = await database.get(query, [email]);
+
+  const validateResponse = await validateQueryResponse(
+    query,
     [email],
     response
   );
+
   return validateResponse;
 }
 
 export async function checkUserExistsByEmail(email) {
-  emailSchema.parse(email);
+  const query = QUERIES.CHECK_USER_EXISTS;
 
-  const response = await database.get(QUERIES.CHECK_USER_EXISTS, [email]);
+  validateQueryArguments(query, [email]);
 
-  const validateResponse = validateQuery(
-    QUERIES.CHECK_USER_EXISTS,
-    [email],
-    response
-  );
+  const response = await database.get(query, [email]);
 
-  return validateResponse && validateResponse.email ? true : false;
+  if (!response || response.length === 0) {
+    return false;
+  }
+
+  const validateResponse = validateQueryResponse(query, [email], response);
+
+  return validateResponse && validateResponse.email && true;
 }
 
 export async function getUserHashedPassword(email) {
@@ -37,7 +48,7 @@ export async function getUserHashedPassword(email) {
     email,
   ]);
 
-  const validateResponse = validateQuery(
+  const validateResponse = validateQueryResponse(
     QUERIES.GET_USER_HASHED_PASSWORD,
     [email],
     response
