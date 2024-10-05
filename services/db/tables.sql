@@ -17,12 +17,15 @@ CREATE TABLE IF NOT EXISTS places (
     description TEXT,
     visited BOOLEAN DEFAULT FALSE,
     is_draft BOOLEAN NOT NULL DEFAULT TRUE,
-    status TEXT CHECK(status IN ('DRAFT', 'ACTIVE')) NOT NULL
+    status TEXT CHECK(status IN ('DRAFT', 'ACTIVE')) NOT NULL,
+
+
+    UNIQUE(user_id, id)
 );
 
 -- Carousel Images table (if using a separate table)
 CREATE TABLE IF NOT EXISTS carousel_images (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    place_id INTEGER NOT NULL REFERENCES places(id),
-    image_url TEXT
+    place_id INTEGER NOT NULL REFERENCES places(id) ON DELETE CASCADE,
+    image_url TEXT UNIQUE
 );

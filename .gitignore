@@ -1,3 +1,4 @@
 node_modules
 .*env*
 myplaces.db
+sample.sql
