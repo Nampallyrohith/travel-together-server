@@ -4,6 +4,8 @@ import { loginUserHandler, newRegistrationHandler } from "./routes/users.js";
 import { authenticateUser } from "./middlewares/auth.js";
 import bodyParser from "body-parser";
 import {
+  getAllPlacesHander,
+  getSinglePlaceHandler,
   postDraftPlaceHandler,
   setDraftplaceHandler,
   setPostPlaceHandler,
@@ -40,6 +42,8 @@ app.post("/place/new", authenticateUser, async (req, res) => {
   await postDraftPlaceHandler(email, res);
 });
 
+
+// Drafting
 app.put("/draft/place/:placeId", authenticateUser, async (req, res) => {
   const { email } = req;
 
@@ -77,6 +81,7 @@ app.put("/draft/place/:placeId", authenticateUser, async (req, res) => {
   );
 });
 
+// TO-DO: If any error try change method to POST
 app.put("/post/place/:placeId", authenticateUser, async (req, res) => {
   const { email } = req;
 
@@ -85,3 +90,13 @@ app.put("/post/place/:placeId", authenticateUser, async (req, res) => {
 
   await setPostPlaceHandler(res, placeId, email);
 });
+
+
+app.get("/browse/places", authenticateUser, async (req, res) => {
+  await getAllPlacesHander(res);
+})
+
+app.get("/place/:placeId", authenticateUser, async (req, res) => {
+  const {placeId} = req.params
+  await getSinglePlaceHandler(res, placeId )
+})

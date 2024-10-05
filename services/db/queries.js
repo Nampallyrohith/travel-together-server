@@ -86,6 +86,46 @@ var QUERIES;
     FROM places
     WHERE id=? and user_id=?;
   `;
+
+  QUERIES["GET_ALL_USERS_PLACES"] = `
+    SELECT id AS placeId, 
+      user_id AS "userId", 
+      place_name AS "placeName", 
+      address, 
+      location_link AS "locationLink", 
+      image_url AS "placeImage", 
+      description, 
+      visited, 
+      is_draft AS "isDraft", 
+      status 
+    FROM places 
+    WHERE status = '${placesStatusEnum.ACTIVE}';
+
+  `;
+
+  QUERIES["GET_SINGLE_PLACE"] = `
+    SELECT 
+      id as placeId, 
+      user_id as "userId",
+      place_name as "placeName", 
+      address, 
+      location_link as "locationLink", 
+      image_url AS "placeImage", 
+      description,
+      visited,
+      is_draft as "isDraft",
+      status
+    FROM 
+      places 
+    WHERE 
+      places.id = ? and status='${placesStatusEnum.ACTIVE}';
+  `;
+
+  QUERIES["GET_SLIDE_IMAGES_BY_PLACE_ID"] = `
+    SELECT image_url as slideImage
+    FROM carousel_images
+    WHERE place_id=?;
+  `;
 })(QUERIES || (QUERIES = {}));
 
 const QUERY_TO_Z_MAPPING = {
@@ -162,6 +202,47 @@ const QUERY_TO_Z_MAPPING = {
     rows: {
       placeId: z.number(),
     },
+  },
+
+  [QUERIES.GET_ALL_USERS_PLACES]: {
+    args: [],
+    rows: {
+      placeId: z.number(),
+      userId: z.number(),
+      placeName: z.string(),
+      address: z.string(),
+      locationLink: z.string(),
+      placeImage: z.string(),
+      description: z.string().nullable(),
+      visited: z.number(),
+      isDraft: z.number(),
+      status: z.string(),
+    },
+  },
+
+  [QUERIES.GET_SINGLE_PLACE]: {
+    args: [z.number().describe("Place ID")],
+    rows: {
+      placeId: z.number(),
+      userId: z.number(),
+      placeName: z.string(),
+      address: z.string(),
+      locationLink: z.string(),
+      placeImage: z.string(),
+      description: z.string().nullable(),
+      visited: z.number(),
+      isDraft: z.number(),
+      status: z.string(),
+    },
+  },
+
+  [QUERIES.GET_SLIDE_IMAGES_BY_PLACE_ID]: {
+    args: [z.number().describe("Place ID")],
+    rows: z.array(
+      z.object({
+        slideImage: z.string(),
+      })
+    ),
   },
 };
 

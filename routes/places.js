@@ -1,4 +1,6 @@
 import {
+  getAllPlaces,
+  getSinglePlace,
   postDraftPlace,
   setDraftPlace,
   setPostPlace,
@@ -70,3 +72,24 @@ export const setPostPlaceHandler = async (res, placeId, email) => {
     },
   });
 };
+
+
+export const getAllPlacesHander = async (res) => {
+  const response = await getAllPlaces();
+  return res.status(200).json({
+    message: "Places are retrieved successfully.",
+    data: response
+  })
+}
+
+export const getSinglePlaceHandler = async (res, placeId) => {
+  const response = await getSinglePlace(placeId)
+
+  return res.status(200).json({
+    message: "Place retrieved successfully",
+    data: {
+      placeInfo: response.validateInfo,
+      slideImage: response.slideImages.map(image => image.slideImage),
+    }
+  })
+}

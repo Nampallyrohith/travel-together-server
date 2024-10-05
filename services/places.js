@@ -102,3 +102,33 @@ export async function setPostPlace(placeId, email) {
 
   return validateResponse;
 }
+
+export async function getAllPlaces() {
+  const response = await database.all(QUERIES.GET_ALL_USERS_PLACES);
+  return response;
+}
+
+export async function getSinglePlace(placeId) {
+  placeIdSchema.parse(placeId);
+  // await checkPlaceIdExists(placeId);
+  const placeInfo = await database.get(QUERIES.GET_SINGLE_PLACE, [placeId]);
+  const slideImages = await database.all(QUERIES.GET_SLIDE_IMAGES_BY_PLACE_ID, [
+    placeId,
+  ]);
+
+  const validateInfo = validateQueryResponse(
+    QUERIES.GET_SINGLE_PLACE,
+    [placeId],
+    placeInfo
+  );
+  // const validateSlideImages = validateQueryResponse(
+  //   QUERIES.GET_SLIDE_IMAGES_BY_PLACE_ID,
+  //   [placeId],
+  //   slideImages
+  // );
+
+  return {
+    validateInfo,
+    slideImages,
+  };
+}
