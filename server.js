@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors"
 import { initializeDBAndStartServer } from "./services/db/ConnectionToDB.js";
 import { loginUserHandler, newRegistrationHandler } from "./routes/users.js";
 import { authenticateUser } from "./middlewares/auth.js";
@@ -15,6 +16,7 @@ import { placeIdSchema, placeSchema } from "./schema/places.schema.js";
 export const app = express();
 
 app.use(express.json());
+app.use(cors())
 app.use(bodyParser.json());
 
 // connect to db

@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS places (
 );
 
 -- Carousel Images table (if using a separate table)
-CREATE TABLE IF NOT EXISTS carousal_images (
+CREATE TABLE IF NOT EXISTS carousel_images (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     place_id INTEGER NOT NULL REFERENCES places(ID) ON DELETE CASCADE,
     image_url TEXT NOT NULL
