@@ -12,8 +12,13 @@ export const newRegistrationHandler = async (
   res
 ) => {
   try {
-    await newRegistration(fullName, email, password);
-    return res.status(201).json({ message: "User registered successfully" });
+    const response = await newRegistration(fullName, email, password);
+    return res.status(201).json({
+      message: "User registered successfully",
+      data: {
+        token: response,
+      },
+    });
   } catch (e) {
     if (e instanceof UserExists) {
       return res.status(400).json({ message: "User already registered." });
@@ -27,9 +32,13 @@ export const newRegistrationHandler = async (
 export const loginUserHandler = async (email, password, res) => {
   try {
     const response = await loginUser(email, password);
-    return res
-      .status(200)
-      .json({ message: "Login successfull.", email, jwtToken: response });
+    return res.status(200).json({
+      message: "Login successfull.",
+      data: {
+        email,
+        token: response,
+      },
+    });
   } catch (e) {
     if (e instanceof NoUserFound) {
       return res.status(400).json({ message: "No user found." });

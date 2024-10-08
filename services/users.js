@@ -12,7 +12,6 @@ import {
 export async function getUserByEmail(email) {
   // emailSchema.parse(email);
   const query = QUERIES.GET_USER_BY_EMAIL;
-  
 
   await validateQueryArguments(query, [email]);
 
@@ -69,6 +68,11 @@ export async function newRegistration(fullName, email, password) {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   await database.run(QUERIES.INSERT_USER, [fullName, email, hashedPassword]);
+
+  const payload = { email };
+  const token = jwt.sign(payload, "SR_KEY");
+
+  return token;
 }
 
 export async function loginUser(email, password) {
